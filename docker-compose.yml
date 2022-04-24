@@ -1,0 +1,32 @@
+version: '3.3'
+
+services:
+  db:
+    container_name: postgreSQL_coffee
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgresadmin
+      POSTGRES_PASSWORD: aisa2022test
+    volumes:
+      - ./:/basedir
+    ports:
+      - "5432:5432"
+  app:
+    image: coffee-machine:latest
+    restart: on-failure
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    ports:
+    - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgresadmin
+      - SPRING_DATASOURCE_PASSWORD=aisa2022test
+volumes:
+  db:
+    driver: local
